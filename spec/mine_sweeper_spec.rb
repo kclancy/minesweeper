@@ -1,4 +1,5 @@
-require "mine_sweeper"
+require 'spec_helper'
+require 'mine_sweeper'
 
 module MineSweeper
   describe MineSweeper do
@@ -46,6 +47,80 @@ module MineSweeper
           @grid.cols = 1
           @grid.validate?.should == true
         end
+      end
+
+      describe '#add_line' do
+        before(:each) do
+          @grid.rows = 4
+          @grid.cols = 5
+        end
+
+        it 'can only be passed valid data' do
+          @grid.add_line("*....").should == true
+          @grid.add_line("*****").should == true
+          @grid.add_line(".....").should == true
+          @grid.add_line.should == false
+          @grid.add_line("xooo").should == false
+          @grid.add_line(".").should == false
+          @grid.add_line(".........").should == false
+        end
+
+        it 'can only be passed row number of lines' do
+          @grid.add_line("*....")
+          @grid.add_line(".....")
+          @grid.add_line("...*.")
+          @grid.add_line("*....")
+          lambda {@grid.add_line("*....")}.should raise_error
+        end
+
+      end
+
+      describe '#pad_grid' do
+
+        it 'should pad small grid' do
+          @grid = create_grid(@grid, 3, 2)
+
+          padded_grid = @grid.pad_grid
+          padded_grid.length.should == @grid.rows + 2
+
+          padded_grid.each {|e| e.length.should == (@grid.cols + 2)}
+        end
+
+        it 'should pad large grid' do
+
+          @grid = create_grid(@grid, 5, 5)
+
+          padded_grid = @grid.pad_grid
+          padded_grid.length.should == @grid.rows + 2
+
+          padded_grid.each {|e| e.length.should == (@grid.cols + 2)}
+        end
+
+        it 'should pad extra large grid' do
+
+          @grid = create_grid(@grid, 47, 62)
+
+          padded_grid = @grid.pad_grid
+          padded_grid.length.should == @grid.rows + 2
+
+          padded_grid.each {|e| e.length.should == (@grid.cols + 2)}
+        end
+      end
+
+      describe '#score_square' do
+
+        it 'finds the mine' do
+          @grid.rows = 3
+          @grid.cols = 2
+
+          @grid.add_line("*.")
+          @grid.add_line("..")
+          @grid.add_line("..")
+
+          @grid.score_square(0, 0).should == "*"
+          @grid.score_square(0, 1).should == "1"
+        end
+
       end
     end
   end
