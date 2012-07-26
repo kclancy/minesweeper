@@ -31,6 +31,15 @@ module MineSweeper
       padded_grid = pad_grid
       return "*" if padded_grid[row_pos + 1][col_pos + 1] == "*"
 
+      (-1..1).each do |x|       
+        (-1..1).each do |y|          
+          i = (row_pos + 1) + x
+          j = (col_pos + 1) + y
+          p padded_grid[i][j]
+          #padded_grid[row_pos + 1][(col_pos + 1) - 1]
+        end
+      end
+
       nil
     end
   end
