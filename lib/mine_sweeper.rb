@@ -29,18 +29,25 @@ module MineSweeper
 
     def score_square(row_pos, col_pos)
       padded_grid = pad_grid
-      return "*" if padded_grid[row_pos + 1][col_pos + 1] == "*"
+      offset_row_pos, offset_col_pos = offset_coordinates(row_pos, col_pos)
+      score = 0
+
+      return "*" if padded_grid[offset_row_pos][offset_col_pos] == "*"
 
       (-1..1).each do |x|       
         (-1..1).each do |y|          
-          i = (row_pos + 1) + x
-          j = (col_pos + 1) + y
-          p padded_grid[i][j]
-          #padded_grid[row_pos + 1][(col_pos + 1) - 1]
+          i = offset_row_pos + x
+          j = offset_col_pos + y
+          
+          score += 1 if padded_grid[i][j] == "*"          
         end
       end
 
-      nil
+      score.to_s
+    end
+
+    def offset_coordinates(row_pos, col_pos)
+      [row_pos + 1, col_pos + 1]
     end
   end
 end

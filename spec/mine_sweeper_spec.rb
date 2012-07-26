@@ -72,11 +72,9 @@ module MineSweeper
           @grid.add_line("*....")
           lambda {@grid.add_line("*....")}.should raise_error
         end
-
       end
 
       describe '#pad_grid' do
-
         it 'should pad small grid' do
           @grid = create_grid(@grid, 3, 2)
 
@@ -109,18 +107,37 @@ module MineSweeper
 
       describe '#score_square' do
 
-        it 'finds the mine' do
-          @grid.rows = 3
-          @grid.cols = 2
+        before(:each) do
+          @grid.rows = 4
+          @grid.cols = 4
 
-          @grid.add_line("*.")
-          @grid.add_line("..")
-          @grid.add_line("..")
-
-          @grid.score_square(0, 0).should == "*"
-          @grid.score_square(0, 1).should == "1"
+          @grid.add_line("*...")
+          @grid.add_line("....")
+          @grid.add_line(".*..")
+          @grid.add_line("...*")
         end
 
+        it 'finds the mine' do
+          @grid.score_square(0, 0).should == "*"          
+          @grid.score_square(2, 1).should == "*"
+          @grid.score_square(3, 3).should == "*"
+        end
+
+        it 'scores the square correctly' do
+          @grid.score_square(0, 0).should eq '*'
+          @grid.score_square(0, 1).should eq '1'
+          @grid.score_square(1, 1).should eq '2'
+          @grid.score_square(2, 1).should eq '*'
+          @grid.score_square(3, 3).should eq '*'
+          @grid.score_square(3, 0).should eq '1'
+          @grid.score_square(0, 3).should eq '0'
+        end
+      end
+
+      describe 'offset_coordinates' do
+        it 'offsets the coordinates correctly' do
+          @grid.offset_coordinates(0, 0).should == [1,1]
+        end
       end
     end
   end
